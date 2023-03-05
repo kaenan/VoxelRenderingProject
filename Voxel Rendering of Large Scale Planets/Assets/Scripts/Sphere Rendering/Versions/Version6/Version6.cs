@@ -21,10 +21,9 @@ public class Version6 : MonoBehaviour
     public int planetSize = 10;
     public int chunkSize = 10;
     public Material meshTexture;
-    public GameObject voxelPrefab;
 
     [Header("Terrain")]
-    [Range(1, 10)] public int amplitude;
+    [Range(1, 10)] public float amplitude;
     [Range(0, 1)] public float scale;
     public Vector3 offset;
 
@@ -47,13 +46,12 @@ public class Version6 : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E))
         {
             if (GameObject.Find("Planet")) Destroy(GameObject.Find("Planet"));
-            containerSize = planetSize * 2;
+            containerSize = (int) Mathf.Ceil(planetSize * 1.5f);
             centre = new Vector3(containerSize / 2, containerSize / 2, containerSize / 2);
             container = new GameObject("Planet");
             container.transform.position = centre;
             chunks.Clear();
             CreatePoints();
-            //bufferTest();
         }
     }
 
@@ -120,15 +118,30 @@ public class Version6 : MonoBehaviour
                         ArrayList voxelInfo;
                         string key;
                         key = x + "," + y + "," + z;
-                        //GameObject temp1 = Instantiate(voxelPrefab, voxelPosition, Quaternion.identity);
-                        //temp1.name = "Float = " + edgeValue;
 
-                        voxelInfo = new ArrayList
+                        if (edgeValue <= (planetSize / 2)-1)
+                        {
+                            double xPos2 = x * caveScale + caveOffset.x;
+                            double yPos2 = y * caveScale + caveOffset.y;
+                            double zPos2 = z * caveScale + caveOffset.z;
+                            float caveValue = distance * (float)simplexNoise.Evaluate(xPos2, yPos2, zPos2) * caveAmplitude;
+                            Debug.Log(caveValue);
+
+                            voxelInfo = new ArrayList
+                            {
+                                voxelPosition,
+                                caveValue
+                            };
+
+                        }
+                        else
+                        {
+                            voxelInfo = new ArrayList
                             {
                                 voxelPosition,
                                 edgeValue
-                        };
-
+                            };
+                        }
                         vertices.Add(key, voxelInfo);
                     }
                 }
@@ -150,8 +163,11 @@ public class Version6 : MonoBehaviour
             marching.Surface = planetSize / 2;
             marching.Generate(chunk.vertices, verts, indices, chunk.startingPosition, chunkSize);
 
-            var position = new Vector3(containerSize / 2, containerSize / 2, containerSize / 2);
-            CreateMesh(verts, normals, indices, position, chunk);
+            if (verts.Count > 0 || indices.Count > 0)
+            {
+                var position = new Vector3(containerSize / 2, containerSize / 2, containerSize / 2);
+                CreateMesh(verts, normals, indices, position, chunk);
+            }
         }
     }
 
