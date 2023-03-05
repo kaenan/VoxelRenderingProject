@@ -1,0 +1,27 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+
+struct Triangle
+{
+    float3 vertexA;
+    float3 vertexB;
+    float3 vertexC;
+};
+
+AppendStructuredBuffer<float> randomValue;
+RWStructuredBuffer<float> pixels;
+int testValue;
+int returnVal;
+
+
+[numthreads(8,8,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{  
+    for (int i = 0; i < returnVal; i++)
+    {
+        randomValue.Append(pixels.Load(testValue + i));
+    }
+}
