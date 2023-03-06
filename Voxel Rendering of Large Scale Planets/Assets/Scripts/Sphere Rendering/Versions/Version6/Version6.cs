@@ -23,22 +23,21 @@ public class Version6 : MonoBehaviour
     public Material meshTexture;
 
     [Header("Terrain")]
-    [Range(1, 10)] public float amplitude;
-    [Range(0, 1)] public float scale;
+    [Range(0, 10)]public float scale = 1;
+    [Range(1, 10)] public float amplitude = 1;
     public Vector3 offset;
+    public float minValue;
+
 
     [Header("Caves")]
     [Range(0, 1)] public float caveScale = 0.5f;
-    [Range(1, 100)] public float caveAmplitude = 1f;
-    [Range(0, 100)] public float caveThreshold = 1f;
+    [Range(1, 10)] public float caveAmplitude = 1f;
     public Vector3 caveOffset = new Vector3(0, 0, 0);
 
     private int numOfChunks;
     private GameObject container;
     private int containerSize;
     private Vector3 centre;
-
-    private string combinationName;
     private List<Chunk> chunks = new List<Chunk>();
 
     private void Update()
@@ -113,35 +112,43 @@ public class Version6 : MonoBehaviour
                         double yPos = y * scale + offset.y;
                         double zPos = z * scale + offset.z;
                         float distance = Vector3.Distance(voxelPosition, centre);
-                        float edgeValue = distance + (float)simplexNoise.Evaluate(xPos, yPos, zPos) * amplitude;
-                        
+                        float noiseValue = distance + (float)simplexNoise.Evaluate(xPos, yPos, zPos) * amplitude;
+
+                        noiseValue = Mathf.Max(planetSize / 2, noiseValue - minValue);
+
                         ArrayList voxelInfo;
                         string key;
                         key = x + "," + y + "," + z;
 
-                        if (edgeValue <= (planetSize / 2)-1)
-                        {
-                            double xPos2 = x * caveScale + caveOffset.x;
-                            double yPos2 = y * caveScale + caveOffset.y;
-                            double zPos2 = z * caveScale + caveOffset.z;
-                            float caveValue = distance * (float)simplexNoise.Evaluate(xPos2, yPos2, zPos2) * caveAmplitude;
-                            Debug.Log(caveValue);
-
-                            voxelInfo = new ArrayList
+                        voxelInfo = new ArrayList
                             {
                                 voxelPosition,
-                                caveValue
+                                noiseValue
                             };
 
-                        }
-                        else
-                        {
-                            voxelInfo = new ArrayList
-                            {
-                                voxelPosition,
-                                edgeValue
-                            };
-                        }
+                        //if (edgeValue <= (planetSize / 2)-1)
+                        //{
+                        //    double xPos2 = x * caveScale + caveOffset.x;
+                        //    double yPos2 = y * caveScale + caveOffset.y;
+                        //    double zPos2 = z * caveScale + caveOffset.z;
+                        //    float caveValue = distance * (float)simplexNoise.Evaluate(xPos2, yPos2, zPos2) * caveAmplitude;
+                        //    Debug.Log(caveValue);
+
+                        //    voxelInfo = new ArrayList
+                        //    {
+                        //        voxelPosition,
+                        //        caveValue
+                        //    };
+
+                        //}
+                        //else
+                        //{
+                        //    voxelInfo = new ArrayList
+                        //    {
+                        //        voxelPosition,
+                        //        edgeValue
+                        //    };
+                        //}
                         vertices.Add(key, voxelInfo);
                     }
                 }
