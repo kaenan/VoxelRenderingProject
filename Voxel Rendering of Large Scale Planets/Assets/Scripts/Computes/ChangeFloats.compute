@@ -19,12 +19,12 @@ float CalculateDistance(int3 p1)
     return sqrt(pow(centre.x - p1.x, 2) + pow(centre.y - p1.y, 2) + pow(centre.z - p1.z, 2));
 }
 
-[numthreads(8,8,8)]
+[numthreads(1,1,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
     int3 xyz = int3(id.x, id.y, id.z);
                   
-    if (CalculateDistance(xyz) < size / 2 && CalculateDistance(xyz) > (size / 2) - 1)
+    if (CalculateDistance(xyz) < (size / 2))
     {
         Voxel voxel;
         voxel.x = id.x;

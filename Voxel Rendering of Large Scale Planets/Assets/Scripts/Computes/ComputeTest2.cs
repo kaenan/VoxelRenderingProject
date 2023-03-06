@@ -39,15 +39,11 @@ public class ComputeTest2 : MonoBehaviour
     private void DispatchShader()
     {
         buffer = new ComputeBuffer(size * size * size, sizeof(float) + (sizeof(int) * 3), ComputeBufferType.Append);
-        //buffer = new ComputeBuffer();
-        //buffer.SetCounterValue(0);
-
         shader.SetBuffer(0, "buffer", buffer);
-
         shader.SetFloat("size", size);
         shader.SetFloats("centre", centre);
 
-        shader.Dispatch(0, size / 8, size / 8, size / 8);
+        shader.Dispatch(0, size, size, size);
 
         Voxel[] voxels = new Voxel[size * size * size];
         buffer.GetData(voxels);
