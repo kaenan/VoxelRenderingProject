@@ -1,0 +1,40 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+
+struct Voxel
+{
+    int x;
+    int y;
+    int z;
+    float distanceValue;
+    int used;
+};
+
+AppendStructuredBuffer<Voxel> buffer;
+
+float planetSize;
+float3 centre;
+int3 startingPosition;
+
+float CalculateDistance(int3 p1)
+{
+    return sqrt(pow(centre.x - p1.x, 2) + pow(centre.y - p1.y, 2) + pow(centre.z - p1.z, 2));
+}
+
+[numthreads(1,1,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    int3 xyz = int3(startingPosition.x + id.x, startingPosition.y + id.y, startingPosition.z + id.z);
+                  
+    if (CalculateDistance(xyz) < (planetSize / 2) && CalculateDistance(xyz) > (planetSize / 2) - 1)
+    {
+        Voxel voxel;
+        voxel.x = startingPosition.x + id.x;
+        voxel.y = startingPosition.y + id.y;
+        voxel.z = startingPosition.z + id.z;
+        voxel.distanceValue = CalculateDistance(xyz);
+        voxel.used = 1;
+        buffer.Append(voxel);
+    }
+}

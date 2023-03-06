@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public class MarchingCubesV7 : MarchingV6
+public class MarchingCubesV7 : MarchingV7
 {
 
     private Vector3[] EdgeVertex { get; set; }

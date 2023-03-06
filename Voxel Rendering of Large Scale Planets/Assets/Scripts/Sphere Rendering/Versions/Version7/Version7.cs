@@ -1,6 +1,7 @@
 using NoiseTest;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -21,12 +22,17 @@ public class Version7 : MonoBehaviour
     public int planetSize = 10;
     public int chunkSize = 10;
     public Material meshTexture;
+    public GameObject voxelPrefab;
 
     [Header("Terrain")]
     [Range(0, 10)]public float scale = 1;
     [Range(1, 10)] public float amplitude = 1;
     public Vector3 offset;
     public float minValue;
+
+    [Header("Compute Shaders")]
+    public ComputeShader generateChunks;
+    ComputeBuffer buffer;
 
     private int numChunks;
     private GameObject container;
@@ -40,6 +46,15 @@ public class Version7 : MonoBehaviour
         public IDictionary<string, ArrayList> vertices;
         public List<GameObject> meshes;
     }
+    struct Voxel
+    {
+        public int x;
+        public int y;
+        public int z;
+        public float distanceValue;
+        public int used;
+    };
+
 
     private void Update()
     {
@@ -53,6 +68,7 @@ public class Version7 : MonoBehaviour
             chunks.Clear();
 
             CreateChunks();
+            GenerateChunk();
         }
     }
 
@@ -73,6 +89,47 @@ public class Version7 : MonoBehaviour
                     Chunk chunk = new Chunk();
                     chunk.startingPosition = position;
                     chunks.Add(chunk);
+                }
+            }
+        }
+    }
+
+    private void GenerateChunk()
+    {
+        float[] centre = new float[3];
+        centre[0] = containerSize / 2;
+        centre[1] = containerSize / 2;
+        centre[2] = containerSize / 2;
+        foreach (Chunk chunk in chunks)
+        {
+            int[] startingPosition = new int[3];
+            startingPosition[0] = chunk.startingPosition.x;
+            startingPosition[1] = chunk.startingPosition.y;
+            startingPosition[2] = chunk.startingPosition.z;
+
+            buffer = new ComputeBuffer(chunkSize * chunkSize * chunkSize, sizeof(float) + (sizeof(int) * 4), ComputeBufferType.Append);
+            generateChunks.SetBuffer(0, "buffer", buffer);
+
+            generateChunks.SetFloat("planetSize", planetSize);
+            generateChunks.SetFloats("centre", centre);
+            generateChunks.SetInts("startingPosition", startingPosition);
+
+            generateChunks.Dispatch(0, chunkSize, chunkSize, chunkSize);
+            Voxel[] voxels = new Voxel[chunkSize * chunkSize * chunkSize];
+            buffer.GetData(voxels);
+
+            int i = 0;
+            GameObject c = new GameObject("Chunk");
+            c.transform.SetParent(container.transform);
+            foreach (Voxel voxel in voxels)
+            {
+                if (voxel.used == 1)
+                {
+                    Vector3 pos = new Vector3(voxel.x, voxel.y, voxel.z);
+                    GameObject temp = Instantiate(voxelPrefab, pos, Quaternion.identity);
+                    temp.transform.name = i + " --- " + voxel.distanceValue.ToString();
+                    temp.transform.SetParent(c.transform);
+                    i++;
                 }
             }
         }
