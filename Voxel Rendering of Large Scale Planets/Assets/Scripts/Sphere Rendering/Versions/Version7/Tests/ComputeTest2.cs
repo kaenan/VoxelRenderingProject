@@ -20,6 +20,7 @@ public class ComputeTest2 : MonoBehaviour
         public int y;
         public int z;
         public float distanceValue;
+        public int used;
     }
 
     private void Update()
@@ -38,7 +39,7 @@ public class ComputeTest2 : MonoBehaviour
 
     private void DispatchShader()
     {
-        buffer = new ComputeBuffer(size * size * size, sizeof(float) + (sizeof(int) * 3), ComputeBufferType.Append);
+        buffer = new ComputeBuffer(size * size * size, sizeof(float) + (sizeof(int) * 4), ComputeBufferType.Append);
         shader.SetBuffer(0, "buffer", buffer);
         shader.SetFloat("size", size);
         shader.SetFloats("centre", centre);
@@ -51,7 +52,7 @@ public class ComputeTest2 : MonoBehaviour
         int i = 0;
         foreach (Voxel voxel in voxels)
         {
-            if (voxel.distanceValue > 0)
+            if (voxel.used == 1)
             {
                 Vector3 pos = new Vector3(voxel.x, voxel.y, voxel.z);
                 GameObject temp = Instantiate(voxelPrefab, pos, Quaternion.identity);

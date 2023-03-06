@@ -8,12 +8,12 @@ using UnityEngine.Rendering;
 using UnityEngine.UIElements;
 using UnityEngine.XR;
 
-public class Version6 : MonoBehaviour
+public class Version7 : MonoBehaviour
 {
     /// <summary>
-    /// This version uses the chunks method
     /// 
-    /// Implementation of cave generation
+    /// This version uses the chunks method and compute shaders
+    /// 
     /// </summary>
 
 
@@ -28,17 +28,18 @@ public class Version6 : MonoBehaviour
     public Vector3 offset;
     public float minValue;
 
-
-    [Header("Caves")]
-    [Range(0, 1)] public float caveScale = 0.5f;
-    [Range(1, 10)] public float caveAmplitude = 1f;
-    public Vector3 caveOffset = new Vector3(0, 0, 0);
-
-    private int numOfChunks;
+    private int numChunks;
     private GameObject container;
     private int containerSize;
     private Vector3 centre;
     private List<Chunk> chunks = new List<Chunk>();
+
+    struct Chunk
+    {
+        public Vector3Int startingPosition;
+        public IDictionary<string, ArrayList> vertices;
+        public List<GameObject> meshes;
+    }
 
     private void Update()
     {
@@ -50,26 +51,20 @@ public class Version6 : MonoBehaviour
             container = new GameObject("Planet");
             container.transform.position = centre;
             chunks.Clear();
-            CreatePoints();
+
+            CreateChunks();
         }
     }
 
-    struct Chunk
+    private void CreateChunks()
     {
-        public Vector3Int startingPosition;
-        public IDictionary<string, ArrayList> vertices;
-        public List<GameObject> meshes;
-    }
+        numChunks = CalculateNumberOfChunks(containerSize, chunkSize);
 
-    private void CreatePoints()
-    {
-        numOfChunks = CalculateNumberOfChunks(containerSize, chunkSize);
-
-        for (int x = 0; x < numOfChunks; x++)
+        for (int x = 0; x < numChunks; x++)
         {
-            for (int y = 0; y < numOfChunks; y++)
+            for (int y = 0; y < numChunks; y++)
             {
-                for (int z = 0; z < numOfChunks; z++)
+                for (int z = 0; z < numChunks; z++)
                 {
                     //Position of chunk
                     Vector3Int position = new Vector3Int(x * chunkSize, y * chunkSize, z * chunkSize);
@@ -81,16 +76,6 @@ public class Version6 : MonoBehaviour
                 }
             }
         }
-        ChunkRender();
-    }
-
-    private int CalculateNumberOfChunks(int planetSize, int chunkSize)
-    {
-        float a = (float)planetSize / chunkSize;
-        int b = (int)Mathf.Ceil(planetSize / chunkSize);
-        if (a > b) b += 1;
-        if (b < 1) b = 1;
-        return b;
     }
 
     private void ChunkRender()
@@ -114,6 +99,8 @@ public class Version6 : MonoBehaviour
                         float distance = Vector3.Distance(voxelPosition, centre);
                         float noiseValue = distance + (float)simplexNoise.Evaluate(xPos, yPos, zPos) * amplitude;
 
+                        noiseValue = Mathf.Max(planetSize / 2, noiseValue - minValue);
+
                         ArrayList voxelInfo;
                         string key;
                         key = x + "," + y + "," + z;
@@ -123,30 +110,6 @@ public class Version6 : MonoBehaviour
                                 voxelPosition,
                                 noiseValue
                             };
-
-                        //if (edgeValue <= (planetSize / 2)-1)
-                        //{
-                        //    double xPos2 = x * caveScale + caveOffset.x;
-                        //    double yPos2 = y * caveScale + caveOffset.y;
-                        //    double zPos2 = z * caveScale + caveOffset.z;
-                        //    float caveValue = distance * (float)simplexNoise.Evaluate(xPos2, yPos2, zPos2) * caveAmplitude;
-                        //    Debug.Log(caveValue);
-
-                        //    voxelInfo = new ArrayList
-                        //    {
-                        //        voxelPosition,
-                        //        caveValue
-                        //    };
-
-                        //}
-                        //else
-                        //{
-                        //    voxelInfo = new ArrayList
-                        //    {
-                        //        voxelPosition,
-                        //        edgeValue
-                        //    };
-                        //}
                         vertices.Add(key, voxelInfo);
                     }
                 }
@@ -198,5 +161,14 @@ public class Version6 : MonoBehaviour
         go.GetComponent<MeshFilter>().mesh = mesh;
         //go.transform.position = position;
         chunk.meshes = new List<GameObject>() { go };
+    }
+
+    private int CalculateNumberOfChunks(int planetSize, int chunkSize)
+    {
+        float a = (float)planetSize / chunkSize;
+        int b = (int)Mathf.Ceil(planetSize / chunkSize);
+        if (a > b) b += 1;
+        if (b < 1) b = 1;
+        return b;
     }
 }

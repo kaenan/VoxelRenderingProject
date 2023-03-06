@@ -8,6 +8,7 @@ struct Voxel
     int y;
     int z;
     float distanceValue;
+    int used;
 };
 
 AppendStructuredBuffer<Voxel> buffer;
@@ -31,6 +32,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
         voxel.y = id.y;
         voxel.z = id.z;
         voxel.distanceValue = CalculateDistance(xyz);
+        voxel.used = 1;
         buffer.Append(voxel);
     }
 }
