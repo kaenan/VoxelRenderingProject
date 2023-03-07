@@ -26,13 +26,14 @@ public class Version7 : MonoBehaviour
 
     [Header("Terrain")]
     [Range(0, 10)]public float scale = 1;
-    [Range(1, 10)] public float amplitude = 1;
-    public Vector3 offset;
-    public float minValue;
+    [Range(0, 100)] public float heightMultiplier = 1;
+    //public Vector3 offset;
+    //public float minValue;
 
     [Header("Compute Shaders")]
     public ComputeShader generateChunks;
-    ComputeBuffer buffer;
+    private ComputeBuffer triangleBuffer;
+    private ComputeBuffer triCountBuffer;
 
     private int numChunks;
     private GameObject container;
@@ -45,14 +46,14 @@ public class Version7 : MonoBehaviour
         public Vector3Int startingPosition;
         public IDictionary<string, ArrayList> vertices;
         public List<GameObject> meshes;
+        public List<Vector3> processedVertices;
+        public List<Vector3> processedNormals;
+        public List<int> processedTriangles;
     }
-    struct Voxel
+    struct VertexData
     {
-        public int x;
-        public int y;
-        public int z;
-        public float distanceValue;
-        public int used;
+        public Vector3 position;
+        public Vector3 normal;
     };
 
 
@@ -88,6 +89,9 @@ public class Version7 : MonoBehaviour
                     //Create chunk struct and add to list
                     Chunk chunk = new Chunk();
                     chunk.startingPosition = position;
+                    chunk.processedVertices = new List<Vector3>();
+                    chunk.processedNormals = new List<Vector3>();
+                    chunk.processedTriangles = new List<int>();
                     chunks.Add(chunk);
                 }
             }
@@ -107,92 +111,34 @@ public class Version7 : MonoBehaviour
             startingPosition[1] = chunk.startingPosition.y;
             startingPosition[2] = chunk.startingPosition.z;
 
-            buffer = new ComputeBuffer(chunkSize * chunkSize * chunkSize, sizeof(float) + (sizeof(int) * 4), ComputeBufferType.Append);
-            generateChunks.SetBuffer(0, "buffer", buffer);
+            int numVoxels = (chunkSize - 1) * (chunkSize - 1) * (chunkSize - 1);
+            int vertexCount = (numVoxels * 5) * 3;
+
+            VertexData[] vertexDataArray = new VertexData[vertexCount];
+            triangleBuffer = new ComputeBuffer(vertexCount, System.Runtime.InteropServices.Marshal.SizeOf(typeof(VertexData)), ComputeBufferType.Append);
+            triCountBuffer = new ComputeBuffer(1, sizeof(int), ComputeBufferType.Raw);
+            triangleBuffer.SetCounterValue(0);
+            generateChunks.SetBuffer(0, "triangles", triangleBuffer);
 
             generateChunks.SetFloat("planetSize", planetSize);
+            generateChunks.SetFloat("chunkSize", chunkSize);
+            generateChunks.SetFloat("scale", scale);
+            generateChunks.SetFloat("heightMultiplier", heightMultiplier);
             generateChunks.SetFloats("centre", centre);
             generateChunks.SetInts("startingPosition", startingPosition);
+            generateChunks.Dispatch(0, chunkSize / 8, chunkSize / 8, chunkSize / 8);
 
-            generateChunks.Dispatch(0, chunkSize, chunkSize, chunkSize);
-            Voxel[] voxels = new Voxel[chunkSize * chunkSize * chunkSize];
-            buffer.GetData(voxels);
+            int[] vertexCountData = new int[1];
+            triCountBuffer.SetData(vertexCountData);
+            ComputeBuffer.CopyCount(triangleBuffer, triCountBuffer, 0);
 
-            int i = 0;
-            GameObject c = new GameObject("Chunk");
-            c.transform.SetParent(container.transform);
-            foreach (Voxel voxel in voxels)
-            {
-                if (voxel.used == 1)
-                {
-                    Vector3 pos = new Vector3(voxel.x, voxel.y, voxel.z);
-                    GameObject temp = Instantiate(voxelPrefab, pos, Quaternion.identity);
-                    temp.transform.name = i + " --- " + voxel.distanceValue.ToString();
-                    temp.transform.SetParent(c.transform);
-                    i++;
-                }
-            }
-        }
-    }
+            triCountBuffer.GetData(vertexCountData);
 
-    private void ChunkRender()
-    {
-        OpenSimplexNoise simplexNoise = new OpenSimplexNoise();
-        List<Chunk> tempChunk = new List<Chunk>();
+            int numVertices = vertexCountData[0] * 3;
 
-        foreach (Chunk chunk in chunks)
-        {
-            IDictionary<string, ArrayList> vertices = new Dictionary<string, ArrayList>();
-            for (int x = chunk.startingPosition.x; x < chunk.startingPosition.x + chunkSize + 1; x++)
-            {
-                for (int y = chunk.startingPosition.y; y < chunk.startingPosition.y + chunkSize + 1; y++)
-                {
-                    for (int z = chunk.startingPosition.z; z < chunk.startingPosition.z + chunkSize + 1; z++)
-                    {
-                        Vector3 voxelPosition = new Vector3(x, y, z);
-                        double xPos = x * scale + offset.x;
-                        double yPos = y * scale + offset.y;
-                        double zPos = z * scale + offset.z;
-                        float distance = Vector3.Distance(voxelPosition, centre);
-                        float noiseValue = distance + (float)simplexNoise.Evaluate(xPos, yPos, zPos) * amplitude;
+            triangleBuffer.GetData(vertexDataArray, 0, 0, numVertices);
 
-                        noiseValue = Mathf.Max(planetSize / 2, noiseValue - minValue);
-
-                        ArrayList voxelInfo;
-                        string key;
-                        key = x + "," + y + "," + z;
-
-                        voxelInfo = new ArrayList
-                            {
-                                voxelPosition,
-                                noiseValue
-                            };
-                        vertices.Add(key, voxelInfo);
-                    }
-                }
-            }
-            Chunk newChunk = new Chunk();
-            newChunk.startingPosition = chunk.startingPosition;
-            newChunk.vertices = vertices;
-            tempChunk.Add(newChunk);
-        }
-        chunks = tempChunk;
-
-        foreach(Chunk chunk in chunks)
-        {
-            List<Vector3> verts = new List<Vector3>();
-            List<Vector3> normals = new List<Vector3>();
-            List<int> indices = new List<int>();
-
-            MarchingV6 marching = new MarchingCubesV6();
-            marching.Surface = planetSize / 2;
-            marching.Generate(chunk.vertices, verts, indices, chunk.startingPosition, chunkSize);
-
-            if (verts.Count > 0 || indices.Count > 0)
-            {
-                var position = new Vector3(containerSize / 2, containerSize / 2, containerSize / 2);
-                CreateMesh(verts, normals, indices, position, chunk);
-            }
+            CreateMesh2(vertexDataArray, numVertices, chunk);
         }
     }
 
@@ -218,6 +164,37 @@ public class Version7 : MonoBehaviour
         go.GetComponent<MeshFilter>().mesh = mesh;
         //go.transform.position = position;
         chunk.meshes = new List<GameObject>() { go };
+    }
+
+    private void CreateMesh2(VertexData[] vertexData, int numVertices, Chunk chunk)
+    {
+        Mesh mesh = new Mesh();
+        chunk.processedVertices.Clear();
+        chunk.processedNormals.Clear();
+        chunk.processedTriangles.Clear();
+
+        int triangleIndex = 0;
+
+        for (int i = 0; i < numVertices; i++)
+        {
+            VertexData data = vertexData[i];
+            chunk.processedVertices.Add(data.position);
+            chunk.processedNormals.Add(data.normal);
+            chunk.processedTriangles.Add(triangleIndex);
+            triangleIndex++;
+        }
+ 
+        mesh.SetVertices(chunk.processedVertices);
+        mesh.SetTriangles(chunk.processedTriangles, 0, true);
+        mesh.RecalculateNormals();
+
+        GameObject go = new GameObject("Mesh");
+        go.transform.SetParent(container.transform);
+        go.AddComponent<MeshFilter>();
+        go.AddComponent<MeshRenderer>();
+        go.GetComponent<Renderer>().material = meshTexture;
+        go.GetComponent<MeshFilter>().mesh = mesh;
+
     }
 
     private int CalculateNumberOfChunks(int planetSize, int chunkSize)
