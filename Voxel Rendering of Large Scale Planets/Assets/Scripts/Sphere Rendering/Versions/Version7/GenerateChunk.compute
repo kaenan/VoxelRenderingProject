@@ -24,6 +24,7 @@ int3 startingPosition;
 float chunkSize;
 float scale;
 float heightMultiplier;
+float3 noiseOffset;
 
 float CalculateDistance(float3 xyz)
 {
@@ -38,7 +39,7 @@ float CalculateNoise(int numLayers, float lacunarity, float persistence, float s
 
     for (int i = 0; i < numLayers; i++)
     {
-        float n = 1 - abs(snoise(xyz * frequency) * 2 - 1);
+        float n = 1 - abs(snoise((xyz + noiseOffset) * frequency) * 2 - 1);
         noise += n * amplitude;
 
         amplitude *= persistence;
@@ -85,7 +86,7 @@ Vertex createVertex(int3 coordA, int3 coordB)
     return vertex;
 }
 
-[numthreads(8,8,8)]
+[numthreads(1,1,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
     float3 xyz = id + startingPosition;
