@@ -146,5 +146,6 @@ public class Version7 : MonoBehaviour
         GameObject w = Instantiate(water, centre, Quaternion.identity);
         Vector3 scale = new Vector3(planetSize, planetSize, planetSize);
         w.transform.localScale = scale;
+        w.transform.SetParent(container.transform);
     }
 }

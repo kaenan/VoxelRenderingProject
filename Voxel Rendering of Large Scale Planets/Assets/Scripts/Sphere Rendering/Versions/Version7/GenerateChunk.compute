@@ -45,10 +45,17 @@ float CalculateNoise(int numLayers, float lacunarity, float persistence, float s
         amplitude *= persistence;
         frequency *= lacunarity;
     }
-
-    return noise;
     
-    return snoise(xyz * scale) * amplitude;
+    //if (CalculateDistance(xyz) < planetSize / 2)
+    //{
+    //    return normalize(noise);
+    //}
+    //else
+    //{
+    //    return noise;
+    //}
+    
+    return noise;
 }
 
 float3 calculateNormal(int3 xyz)
