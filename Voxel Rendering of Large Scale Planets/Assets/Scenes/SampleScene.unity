@@ -582,7 +582,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 246.1, y: 175.9, z: 81.1}
+  m_LocalPosition: {x: 246.1, y: 175.9, z: 277.69998}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -788,14 +788,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a56a5f741146f84099e5bd8094d64fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  planetSize: 200
-  chunkSize: 100
+  planetSize: 100
+  chunkSize: 50
   water: {fileID: 5304591576092902192, guid: 2e5597bc52554ee488c7d9f289fd7d9f, type: 3}
   atmosphere: {fileID: 8683660955915997878, guid: 3e7318beb94f8c7449fdc6cbe103f64a, type: 3}
   terrainColour: {fileID: 1808303345}
   scale: 0.8
   heightMultiplier: 22.9
   offset: {x: 25.67, y: 48.64, z: 58.55}
+  caveScale: 0.172
   generateChunks: {fileID: 7200000, guid: 9c5f2675c164d76428bcbd0b8abcc2d0, type: 3}
   generatePlanet: 0
 --- !u!114 &1808303345
@@ -841,4 +842,4 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   planetMaterial: {fileID: -876546973899608171, guid: e260950a2cdf4544fa26e81f79171cc6, type: 3}
   minimumPoint: 0
-  maximumPoint: 141.22
+  maximumPoint: 91.22

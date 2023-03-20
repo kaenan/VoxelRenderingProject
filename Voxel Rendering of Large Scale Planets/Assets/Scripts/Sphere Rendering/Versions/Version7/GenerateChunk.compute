@@ -82,17 +82,8 @@ Vertex createVertex(int3 coordA, int3 coordB)
     float xyzA;
     float xyzB;
     
-    if (CalculateDistance(coordA) + (CalculateNoise(6, 2, 0.5, scale, coordA) * heightMultiplier) < planetSize / 2 ||
-        CalculateDistance(coordB) + (CalculateNoise(6, 2, 0.5, scale, coordB) * heightMultiplier) < planetSize / 2)
-    {
-        xyzA = CalculateDistance(coordA) + (CalculateNoise(6, 2, 0.5, scale, coordA) * heightMultiplier);
-        xyzB = CalculateDistance(coordB) + (CalculateNoise(6, 2, 0.5, scale, coordB) * heightMultiplier);
-    }
-    else
-    {
-        xyzA = CalculateDistance(coordA) * snoise(coordA);
-        xyzB = CalculateDistance(coordB) * snoise(coordB);
-    }
+    xyzA = CalculateDistance(coordA) + (CalculateNoise(6, 2, 0.5, scale, coordA) * heightMultiplier);
+    xyzB = CalculateDistance(coordB) + (CalculateNoise(6, 2, 0.5, scale, coordB) * heightMultiplier);
     
 	// Interpolate between the two corner points based on the density
     float t = ((planetSize / 2) - xyzA) / (xyzB - xyzA);
@@ -129,12 +120,10 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     int cubeConfiguration = 0;
     for (int i = 0; i < 8; i++)
     {
-        if (CalculateDistance(cubeCorners[i]) + (CalculateNoise(6, 2, 0.5, scale, cubeCorners[i]) * heightMultiplier) < planetSize / 2 ||
-            CalculateDistance(cubeCorners[i]) * snoise(cubeCorners[i]) < (planetSize / 2)-1)
+        if (CalculateDistance(cubeCorners[i]) + (CalculateNoise(6, 2, 0.5, scale, cubeCorners[i]) * heightMultiplier) < planetSize / 2)
         {
             cubeConfiguration |= (1 << i);
         }
-
     }
     
     int edgeIndices[] = triangulation[cubeConfiguration];

@@ -22,6 +22,9 @@ public class Version7 : MonoBehaviour
     [Range(1, 100)] public float heightMultiplier = 1;
     public Vector3 offset;
 
+    [Header("Caves")]
+    [Range(0, 1)] public float caveScale;
+
     [Header("Compute Shaders")]
     public ComputeShader generateChunks;
     private ComputeBuffer triangleBuffer;
@@ -117,6 +120,7 @@ public class Version7 : MonoBehaviour
         generateChunks.SetFloat("heightMultiplier", heightMultiplier);
         generateChunks.SetFloats("centre", containerSize / 2, containerSize / 2, containerSize / 2);
         generateChunks.SetFloats("noiseOffset", offset.x, offset.y, offset.z);
+        generateChunks.SetFloat("caveScale", caveScale);
         generateChunks.SetInts("startingPosition", chunk.startingPosition.x, chunk.startingPosition.y, chunk.startingPosition.z);
 
         generateChunks.Dispatch(0, chunkSize, chunkSize, chunkSize);

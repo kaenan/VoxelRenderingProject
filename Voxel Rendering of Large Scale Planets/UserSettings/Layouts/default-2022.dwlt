@@ -119,7 +119,7 @@ MonoBehaviour:
   m_MinSize: {x: 400, y: 200}
   m_MaxSize: {x: 32384, y: 16192}
   vertical: 0
-  controlID: 116
+  controlID: 115
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -144,7 +144,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 200}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 1
-  controlID: 58
+  controlID: 57
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -170,7 +170,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 8096}
   vertical: 0
-  controlID: 59
+  controlID: 58
 --- !u!114 &8
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -299,8 +299,8 @@ MonoBehaviour:
     y: 0
     width: 350
     height: 947
-  m_MinSize: {x: 276, y: 71}
-  m_MaxSize: {x: 4001, y: 4021}
+  m_MinSize: {x: 275, y: 50}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 22}
   m_Panes:
   - {fileID: 22}
@@ -3304,9 +3304,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 223.99413, y: 309.3585, z: -26.441189}
+    m_Target: {x: 166.44366, y: 58.29322, z: 152.85106}
     speed: 2
-    m_Value: {x: 223.99413, y: 309.3585, z: -26.441189}
+    m_Value: {x: 166.44366, y: 58.29322, z: 152.85106}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -3352,13 +3352,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: -0.12126065, y: 0.17748122, z: -0.019347182, w: -0.9770839}
+    m_Target: {x: 0.2532723, y: 0.44077915, z: -0.1321436, w: 0.8517692}
     speed: 2
-    m_Value: {x: -0.12126945, y: 0.17297268, z: -0.018789379, w: -0.9772518}
+    m_Value: {x: 0.2528961, y: 0.4417459, z: -0.13243032, w: 0.85050946}
   m_Size:
-    m_Target: 10
+    m_Target: 173.20508
     speed: 2
-    m_Value: 695.82086
+    m_Value: 173.20508
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -3416,21 +3416,21 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: 04fbffffaa6b0000
+      m_ExpandedIDs: 225bffffeee8ffff04fbffffe0690000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
-        m_Name: Sphere Generator
-        m_OriginalName: Sphere Generator
+        m_Name: 
+        m_OriginalName: 
         m_EditFieldRect:
           serializedVersion: 2
           x: 0
           y: 0
           width: 0
           height: 0
-        m_UserData: 27562
+        m_UserData: 0
         m_IsWaitingForDelay: 0
         m_IsRenaming: 0
-        m_OriginalEventType: 0
+        m_OriginalEventType: 11
         m_IsRenamingFilename: 0
         m_ClientGUIView: {fileID: 8}
       m_SearchString: 
@@ -4596,23 +4596,23 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scripts/Atmosphere
+    - Assets/Scripts/Sphere Rendering/Versions/Version6
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 51
   m_LastFolders:
-  - Assets/Scripts/Atmosphere
+  - Assets/Scripts/Sphere Rendering/Versions/Version6
   m_LastFoldersGridSize: 51
   m_LastProjectPath: C:\UNITY PROJECTS\Voxel Rendering of Large Scale Planets\VoxelRenderingProject\Voxel
     Rendering of Large Scale Planets
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 866e0000
-    m_LastClickedID: 28294
-    m_ExpandedIDs: 00000000ec6c0000ee6c0000f06c0000f26c0000f46c0000f66c0000f86c0000
+    scrollPos: {x: 0, y: 89}
+    m_SelectedIDs: 5e6a0000
+    m_LastClickedID: 27230
+    m_ExpandedIDs: 00000000546a0000566a0000586a00005a6a00005c6a00005e6a0000606a0000da6b000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -4640,7 +4640,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000ec6c0000ee6c0000f06c0000f26c0000f46c0000f66c0000f86c0000
+    m_ExpandedIDs: 00000000546a0000566a0000586a00005a6a00005c6a00005e6a0000606a0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -4665,8 +4665,8 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: 
-    m_LastClickedInstanceID: 0
+    m_SelectedInstanceIDs: e0690000
+    m_LastClickedInstanceID: 27104
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: c62300004e690000c89d0000906e00003a030000
     m_RenameOverlay:
