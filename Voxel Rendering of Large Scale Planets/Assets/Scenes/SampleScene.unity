@@ -556,7 +556,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 110
+  field of view: 90
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -581,14 +581,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: -0, y: 0.43356046, z: -0, w: 0.90112454}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 246.1, y: 175.9, z: 81.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 51.387, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &963194230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -612,7 +612,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -681,6 +681,69 @@ Texture2D:
     offset: 0
     size: 0
     path: 
+--- !u!1 &1080291760
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1080291763}
+  - component: {fileID: 1080291762}
+  - component: {fileID: 1080291761}
+  m_Layer: 0
+  m_Name: Global Volume
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!135 &1080291761
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1080291760}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 180
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1080291762
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1080291760}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 0
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: 8f8cf80f5bc1fa049902ff2e8cb9f727, type: 2}
+--- !u!4 &1080291763
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1080291760}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 200, y: 200, z: 200}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1278669490
 GameObject:
   m_ObjectHideFlags: 0
@@ -690,8 +753,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1278669492}
-  - component: {fileID: 1278669498}
-  - component: {fileID: 1278669499}
   - component: {fileID: 1278669500}
   m_Layer: 0
   m_Name: Sphere Generator
@@ -708,50 +769,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1278669490}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.5, y: 0, z: 9.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1278669498
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1278669490}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 651d21475f58e7546ab8f48d52e9d2dd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  planetSize: 30
-  chunkSize: 10
-  meshTexture: {fileID: 2100000, guid: 3a1bfc22322dabc4a88787b270f9a005, type: 2}
-  scale: 0
-  amplitude: 1
-  offset: {x: 0, y: 0, z: 0}
-  minValue: 0
-  caveScale: 0
-  caveAmplitude: 1
-  caveOffset: {x: 0, y: 0, z: 0}
---- !u!114 &1278669499
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1278669490}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c90449d7b78c2ac4389a1e6fae746ab0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shader: {fileID: 7200000, guid: e167a3ea868adb24899fb980c5fd8ba4, type: 3}
-  voxelPrefab: {fileID: 1430092859966787975, guid: 74f1c024e8bece7438f20aa44e986896, type: 3}
-  size: 20
 --- !u!114 &1278669500
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -764,11 +788,57 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a56a5f741146f84099e5bd8094d64fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  planetSize: 150
-  chunkSize: 50
-  meshTexture: {fileID: 2100000, guid: 3a1bfc22322dabc4a88787b270f9a005, type: 2}
+  planetSize: 200
+  chunkSize: 100
   water: {fileID: 5304591576092902192, guid: 2e5597bc52554ee488c7d9f289fd7d9f, type: 3}
+  atmosphere: {fileID: 8683660955915997878, guid: 3e7318beb94f8c7449fdc6cbe103f64a, type: 3}
+  terrainColour: {fileID: 1808303345}
   scale: 0.8
-  heightMultiplier: 10.6
-  offset: {x: 0, y: 0, z: 0}
+  heightMultiplier: 22.9
+  offset: {x: 25.67, y: 48.64, z: 58.55}
   generateChunks: {fileID: 7200000, guid: 9c5f2675c164d76428bcbd0b8abcc2d0, type: 3}
+  generatePlanet: 0
+--- !u!114 &1808303345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d909000f81785554587fd8fa6bcbfc2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gradient:
+    serializedVersion: 2
+    key0: {r: 0.3301887, g: 0.3301887, b: 0.3301887, a: 1}
+    key1: {r: 0.13300997, g: 0.5754717, b: 0.14105473, a: 1}
+    key2: {r: 0.14901963, g: 0.40392157, b: 0.15593174, a: 0}
+    key3: {r: 0.33962262, g: 0.13530482, b: 0.059273757, a: 0}
+    key4: {r: 0.8018868, g: 0.8018868, b: 0.8018868, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 43176
+    ctime1: 47802
+    ctime2: 51272
+    ctime3: 62066
+    ctime4: 65535
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 5
+    m_NumAlphaKeys: 2
+  planetMaterial: {fileID: -876546973899608171, guid: e260950a2cdf4544fa26e81f79171cc6, type: 3}
+  minimumPoint: 0
+  maximumPoint: 141.22

@@ -31,7 +31,6 @@ public class Chunk
         meshFilter.mesh = mesh;
         this.container = container;
 
-
         processedVertices = new List<Vector3>();
         processedNormals = new List<Vector3>();
         processedTriangles = new List<int>();

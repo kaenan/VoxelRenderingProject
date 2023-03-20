@@ -1,14 +1,6 @@
-using NoiseTest;
-using System.Collections;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Rendering;
-using UnityEngine.UIElements;
-using UnityEngine.XR;
 
+[ExecuteInEditMode]
 public class Version7 : MonoBehaviour
 {
     /// <summary>
@@ -21,11 +13,12 @@ public class Version7 : MonoBehaviour
     [Header("Planet Settings")]
     public int planetSize = 10;
     public int chunkSize = 10;
-    public Material meshTexture;
     public GameObject water;
+    public GameObject atmosphere;
+    public TerrainColour terrainColour;
 
     [Header("Terrain")]
-    [Range(0, 10)]public float scale = 1;
+    [Range(0, 1)]public float scale = 1;
     [Range(1, 100)] public float heightMultiplier = 1;
     public Vector3 offset;
 
@@ -34,6 +27,9 @@ public class Version7 : MonoBehaviour
     private ComputeBuffer triangleBuffer;
     private ComputeBuffer triCountBuffer;
     private VertexData[] vertexDataArray;
+
+    [Header("Generate New Planet")]
+    public bool generatePlanet = false;
 
     private GameObject container;
     private int containerSize;
@@ -45,19 +41,35 @@ public class Version7 : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (generatePlanet)
         {
-            if (GameObject.Find("Planet")) Destroy(GameObject.Find("Planet"));
+            generatePlanet = false;
+
+            if(terrainColour == null) 
+            {
+                terrainColour = ScriptableObject.CreateInstance<TerrainColour>();
+            }
+
+            if (GameObject.Find("Planet " + gameObject.name)) DestroyImmediate(GameObject.Find("Planet " + gameObject.name));
             containerSize = (int) Mathf.Ceil(planetSize * 2f);
             centre = new Vector3(containerSize / 2, containerSize / 2, containerSize / 2);
-            container = new GameObject("Planet");
+            container = new GameObject("Planet " + gameObject.name, typeof(Planet));
             container.transform.position = centre;
+            container.transform.SetParent(transform);
+
+            terrainColour.PlanetHeightAddValue(0);
+            terrainColour.PlanetHeightAddValue((planetSize / 2) + heightMultiplier * (scale + 1));
+
+            container.GetComponent<Planet>().planetData = ScriptableObject.CreateInstance<PlanetData>();
+            container.GetComponent<Planet>().planetData.SetPlanetTerrainColour(terrainColour);
 
             CreateWater();
+            CreateAtmosphere();
             CalculateVertexCount();
             CreateComputeBuffers();
             CreateChunks();
             GenerateAllChunks(chunks);
+            container.GetComponent<Planet>().planetData.SetPlanetChunks(chunks);
         }
     }
 
@@ -78,7 +90,7 @@ public class Version7 : MonoBehaviour
                     //Create chunk struct and add to list
                     GameObject chunkContainer = new GameObject(position.ToString());
                     chunkContainer.transform.SetParent(container.transform);
-                    Chunk chunk = new Chunk(position, chunkContainer, meshTexture);
+                    Chunk chunk = new Chunk(position, chunkContainer, terrainColour.planetMaterial);
                     chunks[i] = chunk;
                     i++;
                 }
@@ -147,5 +159,16 @@ public class Version7 : MonoBehaviour
         Vector3 scale = new Vector3(planetSize, planetSize, planetSize);
         w.transform.localScale = scale;
         w.transform.SetParent(container.transform);
+    }
+
+    private void CreateAtmosphere()
+    {
+        if (atmosphere != null)
+        {
+            GameObject w = Instantiate(atmosphere, centre, Quaternion.identity);
+            Vector3 scale = new Vector3(planetSize * 2, planetSize * 2, planetSize * 2);
+            w.transform.localScale = scale;
+            w.transform.SetParent(container.transform);
+        }
     }
 }
