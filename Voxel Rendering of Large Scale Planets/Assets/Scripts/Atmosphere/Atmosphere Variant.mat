@@ -25,7 +25,9 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
+    - _Alpha: 0.2
     - _QueueControl: 0
+    - _Size: -4.54
     m_Colors: []
   m_BuildTextureStacks: []
 --- !u!114 &2194123152688903314

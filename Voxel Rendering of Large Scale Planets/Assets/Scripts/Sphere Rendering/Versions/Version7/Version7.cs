@@ -18,12 +18,16 @@ public class Version7 : MonoBehaviour
     public TerrainColour terrainColour;
 
     [Header("Terrain")]
-    [Range(0, 1)]public float scale = 1;
+    [Range(0, 1)] public float scale = 1;
     [Range(1, 100)] public float heightMultiplier = 1;
     public Vector3 offset;
 
     [Header("Caves")]
     [Range(0, 1)] public float caveScale;
+    [Range(1, 100)] public float caveScaleMultiplier;
+
+    [Header("Trees")]
+    public GameObject[] treePrefab;
 
     [Header("Compute Shaders")]
     public ComputeShader generateChunks;
@@ -48,13 +52,13 @@ public class Version7 : MonoBehaviour
         {
             generatePlanet = false;
 
-            if(terrainColour == null) 
+            if (terrainColour == null)
             {
                 terrainColour = ScriptableObject.CreateInstance<TerrainColour>();
             }
 
             if (GameObject.Find("Planet " + gameObject.name)) DestroyImmediate(GameObject.Find("Planet " + gameObject.name));
-            containerSize = (int) Mathf.Ceil(planetSize * 2f);
+            containerSize = (int)Mathf.Ceil(planetSize * 2f);
             centre = new Vector3(containerSize / 2, containerSize / 2, containerSize / 2);
             container = new GameObject("Planet " + gameObject.name, typeof(Planet));
             container.transform.position = centre;
@@ -72,6 +76,7 @@ public class Version7 : MonoBehaviour
             CreateComputeBuffers();
             CreateChunks();
             GenerateAllChunks(chunks);
+            GenerateTrees();
             container.GetComponent<Planet>().planetData.SetPlanetChunks(chunks);
         }
     }
@@ -103,7 +108,7 @@ public class Version7 : MonoBehaviour
 
     private void GenerateAllChunks(Chunk[] chunks)
     {
-        foreach(Chunk chunk in chunks)
+        foreach (Chunk chunk in chunks)
         {
             GenerateChunk(chunk);
         }
@@ -121,6 +126,7 @@ public class Version7 : MonoBehaviour
         generateChunks.SetFloats("centre", containerSize / 2, containerSize / 2, containerSize / 2);
         generateChunks.SetFloats("noiseOffset", offset.x, offset.y, offset.z);
         generateChunks.SetFloat("caveScale", caveScale);
+        generateChunks.SetFloat("caveScaleMultiplier", caveScaleMultiplier);
         generateChunks.SetInts("startingPosition", chunk.startingPosition.x, chunk.startingPosition.y, chunk.startingPosition.z);
 
         generateChunks.Dispatch(0, chunkSize, chunkSize, chunkSize);
@@ -132,7 +138,7 @@ public class Version7 : MonoBehaviour
         int numVertices = vertexCountData[0] * 3;
         triangleBuffer.GetData(vertexDataArray, 0, 0, numVertices);
 
-        chunk.CreateMesh(vertexDataArray, numVertices);
+        chunk.CreateMesh(vertexDataArray, numVertices, centre, planetSize);
     }
 
     private int CalculateNumberOfChunks(int planetSize, int chunkSize)
@@ -173,6 +179,19 @@ public class Version7 : MonoBehaviour
             Vector3 scale = new Vector3(planetSize * 2, planetSize * 2, planetSize * 2);
             w.transform.localScale = scale;
             w.transform.SetParent(container.transform);
+        }
+    }
+
+    private void GenerateTrees()
+    {
+        foreach (Chunk chunk in chunks)
+        {
+            for (int i = 0; i < chunk.treePositions.Count; i++)
+            {
+                var t = Instantiate(treePrefab[Random.Range(0, treePrefab.Length)], chunk.treePositions[i], Quaternion.identity);
+                t.transform.SetParent(chunk.container.transform);
+                t.transform.up = chunk.treeNormals[i];
+            }
         }
     }
 }

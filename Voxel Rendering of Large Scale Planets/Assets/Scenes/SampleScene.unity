@@ -516,6 +516,7 @@ GameObject:
   - component: {fileID: 963194226}
   - component: {fileID: 963194230}
   - component: {fileID: 963194233}
+  - component: {fileID: 963194234}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -629,11 +630,25 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4a578d9b2354a4745ba8a8e4dd14efd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &963194234
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63d90c906318e9541a651482f3e33567, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  orientation: {fileID: 0}
+  cameraHolder: {fileID: 0}
 --- !u!28 &1058925476
 Texture2D:
   m_ObjectHideFlags: 0
@@ -742,7 +757,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1278669490
 GameObject:
@@ -769,12 +784,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1278669490}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5, y: 0, z: 9.8}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1278669500
 MonoBehaviour:
@@ -788,15 +803,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a56a5f741146f84099e5bd8094d64fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  planetSize: 100
-  chunkSize: 50
+  planetSize: 200
+  chunkSize: 100
   water: {fileID: 5304591576092902192, guid: 2e5597bc52554ee488c7d9f289fd7d9f, type: 3}
-  atmosphere: {fileID: 8683660955915997878, guid: 3e7318beb94f8c7449fdc6cbe103f64a, type: 3}
+  atmosphere: {fileID: 0}
   terrainColour: {fileID: 1808303345}
-  scale: 0.8
-  heightMultiplier: 22.9
-  offset: {x: 25.67, y: 48.64, z: 58.55}
-  caveScale: 0.172
+  scale: 0.665
+  heightMultiplier: 24.4
+  offset: {x: 0, y: 0, z: 0}
+  caveScale: 1
+  caveScaleMultiplier: 1
+  treePrefab:
+  - {fileID: 191266, guid: c44bd9bdc114d4a60932c0087d9d1732, type: 3}
+  - {fileID: 192044, guid: 19682540d8a014522a319b1cf788aee2, type: 3}
+  - {fileID: 137650, guid: 826b6a0b570e8460990010fa615b5a2a, type: 3}
   generateChunks: {fileID: 7200000, guid: 9c5f2675c164d76428bcbd0b8abcc2d0, type: 3}
   generatePlanet: 0
 --- !u!114 &1808303345
@@ -818,7 +838,7 @@ MonoBehaviour:
     key2: {r: 0.14901963, g: 0.40392157, b: 0.15593174, a: 0}
     key3: {r: 0.33962262, g: 0.13530482, b: 0.059273757, a: 0}
     key4: {r: 0.8018868, g: 0.8018868, b: 0.8018868, a: 0}
-    key5: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0.8018868, g: 0.8018868, b: 0.8018868, a: 0}
     key6: {r: 0, g: 0, b: 0, a: 0}
     key7: {r: 0, g: 0, b: 0, a: 0}
     ctime0: 43176
@@ -826,7 +846,7 @@ MonoBehaviour:
     ctime2: 51272
     ctime3: 62066
     ctime4: 65535
-    ctime5: 0
+    ctime5: 65535
     ctime6: 0
     ctime7: 0
     atime0: 0
@@ -842,4 +862,4 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   planetMaterial: {fileID: -876546973899608171, guid: e260950a2cdf4544fa26e81f79171cc6, type: 3}
   minimumPoint: 0
-  maximumPoint: 91.22
+  maximumPoint: 142.3584
