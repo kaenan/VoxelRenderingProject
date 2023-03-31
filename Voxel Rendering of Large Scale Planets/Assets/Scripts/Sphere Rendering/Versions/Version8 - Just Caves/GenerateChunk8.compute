@@ -25,12 +25,14 @@ float chunkSize;
 
 //Terrain Parameters
 float scale;
+float lacunarity;
+float persistence;
 float heightMultiplier;
 float3 noiseOffset;
 
 //Cave Parameters
+float caveDensity;
 float caveScale;
-float caveScaleMultiplier;
 float3 caveNoiseOffset;
 
 float CalculateDistance(float3 xyz)
@@ -83,9 +85,8 @@ Vertex createVertex(int3 coordA, int3 coordB)
     float xyzA;
     float xyzB;
     
-    
-    xyzA = CalculateDistance(coordA) + (CalculateNoise(6, 2, 0.5, scale, coordA) * heightMultiplier);
-    xyzB = CalculateDistance(coordB) + (CalculateNoise(6, 2, 0.5, scale, coordB) * heightMultiplier);
+    xyzA = CalculateDistance(coordA) - (CalculateNoise(6, lacunarity, persistence, scale, coordA) * heightMultiplier);
+    xyzB = CalculateDistance(coordB) - (CalculateNoise(6, lacunarity, persistence, scale, coordB) * heightMultiplier);
     
 	// Interpolate between the two corner points based on the density
     float t = ((planetSize / 2) - xyzA) / (xyzB - xyzA);
@@ -121,8 +122,8 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     
     int cubeConfiguration = 0;
     for (int i = 0; i < 8; i++)
-    { 
-        if (CalculateDistance(cubeCorners[i]) + CalculateNoise(6, 2, 0.5, scale, cubeCorners[i]) * heightMultiplier < planetSize / 2)
+    {
+        if (CalculateDistance(cubeCorners[i]) - (CalculateNoise(6, lacunarity, persistence, scale, cubeCorners[i]) * heightMultiplier) < planetSize / 2)
         {
             cubeConfiguration |= (1 << i);
         }

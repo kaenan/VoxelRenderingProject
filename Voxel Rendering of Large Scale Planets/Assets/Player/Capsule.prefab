@@ -130,7 +130,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   planet: {fileID: 0}
-  gravity: 15
+  gravity: 20
 --- !u!1 &2816326447192212093
 GameObject:
   m_ObjectHideFlags: 0

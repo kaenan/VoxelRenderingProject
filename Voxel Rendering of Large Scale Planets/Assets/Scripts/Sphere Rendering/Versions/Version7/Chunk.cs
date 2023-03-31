@@ -39,7 +39,7 @@ public class Chunk
         processedTriangles = new List<int>();
     }
 
-    public void CreateMesh(VertexData[] vertexData, int numVertices, Vector3 centre, float planetSize)
+    public void CreateMesh(VertexData[] vertexData, int numVertices, Vector3 centre, float planetSize, int treeDensity)
     {
         processedVertices.Clear();
         processedNormals.Clear();
@@ -63,10 +63,10 @@ public class Chunk
         meshFilter.mesh = mesh;
         container.AddComponent<MeshCollider>();
 
-        GenerateTrees(centre, planetSize);
+        GenerateTrees(centre, planetSize, treeDensity);
     }
 
-    public void GenerateTrees(Vector3 centre, float planetSize)
+    public void GenerateTrees(Vector3 centre, float planetSize, int treeDensity)
     {
         Vector3[] vertices = meshFilter.sharedMesh.vertices;
         Vector3[] normals = meshFilter.sharedMesh.normals;
@@ -74,10 +74,23 @@ public class Chunk
         treeNormals = new List<Vector3>();
         for (int i = 0; i < vertices.Length; i++)
         {
-            if (Random.Range(0, 200) == 15 && Vector3.Distance(centre, vertices[i]) > planetSize / 2 && Vector3.Distance(centre, vertices[i]) < (planetSize / 2) + 10)
+            if (Random.Range(0, treeDensity) == 1 && Vector3.Distance(centre, vertices[i]) > planetSize / 2 && Vector3.Distance(centre, vertices[i]) < (planetSize / 2) + 10)
             {
-                treePositions.Add(vertices[i]);
-                treeNormals.Add(normals[i]);
+                if (vertices[i].y > planetSize)
+                {
+                    if (normals[i].y > 0.5)
+                    {
+                        treePositions.Add(vertices[i]);
+                        treeNormals.Add(normals[i]);
+                    }
+                } else
+                {
+                    if (normals[i].y < -0.5)
+                    {
+                        treePositions.Add(vertices[i]);
+                        treeNormals.Add(normals[i]);
+                    }
+                }
             }
         }
     }

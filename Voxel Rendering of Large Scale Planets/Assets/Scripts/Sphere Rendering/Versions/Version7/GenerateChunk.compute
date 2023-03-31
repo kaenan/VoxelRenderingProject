@@ -51,16 +51,7 @@ float CalculateNoise(int numLayers, float lacunarity, float persistence, float s
         amplitude *= persistence;
         frequency *= lacunarity;
     }
-    
-    //if (CalculateDistance(xyz) < planetSize / 2)
-    //{
-    //    return normalize(noise);
-    //}
-    //else
-    //{
-    //    return noise;
-    //}
-    
+   
     return noise;
 }
 

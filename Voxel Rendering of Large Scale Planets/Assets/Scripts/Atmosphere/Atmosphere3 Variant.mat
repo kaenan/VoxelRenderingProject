@@ -7,13 +7,13 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Atmosphere Variant
-  m_Shader: {fileID: -6465566751694194690, guid: a4c53ad21cd2ca94ca49643ea25ad08f, type: 3}
-  m_Parent: {fileID: -876546973899608171, guid: a4c53ad21cd2ca94ca49643ea25ad08f, type: 3}
-  m_ModifiedSerializedProperties: 12
+  m_Name: Atmosphere3 Variant
+  m_Shader: {fileID: -6465566751694194690, guid: c8b45d6c04f6d1442bb370fe007dd9c0, type: 3}
+  m_Parent: {fileID: -876546973899608171, guid: c8b45d6c04f6d1442bb370fe007dd9c0, type: 3}
+  m_ModifiedSerializedProperties: 2
   m_ValidKeywords: []
   m_InvalidKeywords: []
-  m_LightmapFlags: 4
+  m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
@@ -25,12 +25,13 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - _Alpha: 0.2
-    - _QueueControl: 0
-    - _Size: -4.54
+    - _Normal: -3.47
+    - _Normal_Multiplier: 97.58
+    - _Outer_Fade: 1.43
+    - _Outer_Fade_Power: 2.8
     m_Colors: []
   m_BuildTextureStacks: []
---- !u!114 &2194123152688903314
+--- !u!114 &8290660526878377938
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
