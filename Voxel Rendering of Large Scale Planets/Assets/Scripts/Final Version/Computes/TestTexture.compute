@@ -1,0 +1,62 @@
+#pragma kernel CSMain
+#include "Noise.compute"
+
+RWTexture3D<float> Result;
+
+int planetSize;
+float scale;
+float height;
+float3 offset;
+
+float caveScale;
+float sizeMultiplier;
+float3 caveOffset;
+
+float CalculateDistance(int3 xyz)
+{
+    return sqrt(pow(planetSize - xyz.x, 2) + pow(planetSize - xyz.y, 2) + pow(planetSize - xyz.z, 2));
+}
+
+float CalculateNoise(int numLayers, float lacunarity, float persistence, float scale, float3 xyz)
+{
+    float noise = 0;
+    float frequency = scale / 100;
+    float amplitude = 1;
+
+    for (int i = 0; i < numLayers; i++)
+    {
+        float n = 1 - abs(snoise(xyz * frequency) * 2 - 1);
+        noise += n * amplitude;
+
+        amplitude *= persistence;
+        frequency *= lacunarity;
+    }
+    
+    return noise;
+}
+
+[numthreads(1,1,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{ 
+    //float dn;
+    //if (CalculateDistance(id) > (planetSize / 2) - (planetSize / 2) / 2)
+    //{
+    //    dn = CalculateDistance(id) - CalculateNoise(6, 2, 0.5, scale, id + offset) * height;
+    //    dn = dn / (planetSize / 2);
+    //}
+    //else
+    //{
+    //    dn = CalculateNoise(6, 2, 0.5, caveScale, id + caveOffset) * sizeMultiplier;
+    //}
+    
+    float dn = CalculateDistance(id) - CalculateNoise(6, 2, 0.5, scale, id + offset) * height;
+    dn = dn / (planetSize / 2);
+    
+    if (CalculateDistance(id) < ((planetSize / 2) - (planetSize / 2) / 5) + CalculateNoise(6, 2, 0.5, caveScale, id + caveOffset) * sizeMultiplier)
+    {
+        dn -= CalculateNoise(6, 2, 0.5, caveScale, id + caveOffset) * sizeMultiplier;
+
+    }
+    
+    Result[id] = dn;
+}

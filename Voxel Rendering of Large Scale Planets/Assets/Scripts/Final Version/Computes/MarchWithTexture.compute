@@ -1,0 +1,125 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+#include "Noise.compute"
+#include "MarchingCubesTables.compute"
+
+struct Vertex
+{
+    float3 position;
+    float3 normal;
+};
+
+struct Triangle
+{
+    Vertex vertexC;
+    Vertex vertexB;
+    Vertex vertexA;
+};
+
+AppendStructuredBuffer<Triangle> triangles;
+RWTexture3D<float> noiseTexture;
+
+float planetSize;
+int3 startingPosition;
+float threshold;
+int textureSize;
+
+float SampleNoise(int3 xyz)
+{
+    xyz = max(0, min(xyz, textureSize));
+    return noiseTexture[xyz];
+}
+
+float3 calculateNormal(int3 xyz)
+{
+    int3 offsetX = int3(1, 0, 0);
+    int3 offsetY = int3(0, 1, 0);
+    int3 offsetZ = int3(0, 0, 1);
+
+    float dx = SampleNoise(xyz + offsetX) - SampleNoise(xyz - offsetX);
+    float dy = SampleNoise(xyz + offsetY) - SampleNoise(xyz - offsetY);
+    float dz = SampleNoise(xyz + offsetZ) - SampleNoise(xyz - offsetZ);
+
+    return normalize(float3(dx, dy, dz));
+}
+
+Vertex createVertex(int3 coordA, int3 coordB)
+{
+    float xyzA = SampleNoise(coordA);
+    float xyzB = SampleNoise(coordB);
+    float3 posA = coordA;
+    float3 posB = coordB;
+    
+	// Interpolate between the two corner points based on the density
+    float t = (threshold - xyzA) / (xyzB - xyzA);
+    float3 position = posA + t * (posB - posA);
+
+	// Normal:
+    float3 normalA = calculateNormal(coordA);
+    float3 normalB = calculateNormal(coordB);
+    float3 normal = normalize(normalA + t * (normalB - normalA));
+
+	// Create vertex
+    Vertex vertex;
+    vertex.position = position;
+    vertex.normal = normal;
+
+    return vertex;
+}
+
+[numthreads(1,1,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    float3 xyz = id + startingPosition;
+                  
+    int3 cubeCorners[8];
+    cubeCorners[0] = xyz + int3(0, 0, 0);
+    cubeCorners[1] = xyz + int3(1, 0, 0);
+    cubeCorners[2] = xyz + int3(1, 0, 1);
+    cubeCorners[3] = xyz + int3(0, 0, 1);
+    cubeCorners[4] = xyz + int3(0, 1, 0);
+    cubeCorners[5] = xyz + int3(1, 1, 0);
+    cubeCorners[6] = xyz + int3(1, 1, 1);
+    cubeCorners[7] = xyz + int3(0, 1, 1);
+    
+    int cubeConfiguration = 0;
+    for (int i = 0; i < 8; i++)
+    {
+        if (SampleNoise(cubeCorners[i]) < threshold)
+        {
+            cubeConfiguration |= (1 << i);
+        }
+    }
+    
+    int edgeIndices[] = triangulation[cubeConfiguration];
+
+    for (i = 0; i < 16; i += 3)
+    {
+        if (edgeIndices[i] == -1)
+        {
+            break;
+        }
+        
+        int edgeIndexA = edgeIndices[i];
+        int a0 = cornerIndexAFromEdge[edgeIndexA];
+        int a1 = cornerIndexBFromEdge[edgeIndexA];
+
+        int edgeIndexB = edgeIndices[i + 1];
+        int b0 = cornerIndexAFromEdge[edgeIndexB];
+        int b1 = cornerIndexBFromEdge[edgeIndexB];
+
+        int edgeIndexC = edgeIndices[i + 2];
+        int c0 = cornerIndexAFromEdge[edgeIndexC];
+        int c1 = cornerIndexBFromEdge[edgeIndexC];
+
+        Vertex vertexA = createVertex(cubeCorners[a0], cubeCorners[a1]);
+        Vertex vertexB = createVertex(cubeCorners[b0], cubeCorners[b1]);
+        Vertex vertexC = createVertex(cubeCorners[c0], cubeCorners[c1]);
+
+        Triangle tri;
+        tri.vertexA = vertexC;
+        tri.vertexB = vertexB;
+        tri.vertexC = vertexA;
+        triangles.Append(tri);
+    }
+}
