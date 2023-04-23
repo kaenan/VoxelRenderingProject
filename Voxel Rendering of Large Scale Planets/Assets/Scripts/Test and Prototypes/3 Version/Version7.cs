@@ -7,6 +7,8 @@ public class Version7 : MonoBehaviour
     /// 
     /// This version uses the chunks method and compute shaders
     /// 
+    /// This version uses the same Planet script as the final version and returns an error due to this version not creating a Render Texture.
+    /// 
     /// </summary>
 
     [Header("Planet Settings")]
@@ -46,7 +48,7 @@ public class Version7 : MonoBehaviour
     {
         if (generatePlanet)
         {
-            
+            var timer = System.Diagnostics.Stopwatch.StartNew();
             generatePlanet = false;
 
             if (terrainColour == null)
@@ -74,6 +76,9 @@ public class Version7 : MonoBehaviour
             CreateChunks();
             GenerateAllChunks(chunks);
             GenerateTrees();
+            DisposeBuffers();
+            timer.Stop();
+            Debug.Log("Execution Time = " + timer.ElapsedMilliseconds + "ms");
         }
     }
 
@@ -157,12 +162,21 @@ public class Version7 : MonoBehaviour
         triCountBuffer = new ComputeBuffer(1, sizeof(int), ComputeBufferType.Raw);
     }
 
+    private void DisposeBuffers()
+    {
+        triangleBuffer.Dispose();
+        triCountBuffer.Dispose();
+    }
+
     private void CreateWater()
     {
-        GameObject w = Instantiate(water, centre, Quaternion.identity);
-        Vector3 scale = new Vector3(planetSize, planetSize, planetSize);
-        w.transform.localScale = scale;
-        w.transform.SetParent(container.transform);
+        if (water != null)
+        {
+            GameObject w = Instantiate(water, centre, Quaternion.identity);
+            Vector3 scale = new Vector3(planetSize, planetSize, planetSize);
+            w.transform.localScale = scale;
+            w.transform.SetParent(container.transform);
+        }
     }
 
     private void CreateAtmosphere()
@@ -178,14 +192,17 @@ public class Version7 : MonoBehaviour
 
     private void GenerateTrees()
     {
-        foreach (Chunk chunk in chunks)
+        if (treePrefab.Length > 0)
         {
-            for (int i = 0; i < chunk.treePositions.Count; i++)
+            foreach (Chunk chunk in chunks)
             {
-                var t = Instantiate(treePrefab[Random.Range(0, treePrefab.Length)], chunk.treePositions[i], Quaternion.identity);
-                t.transform.SetParent(chunk.container.transform);
-                t.transform.up = chunk.treeNormals[i];
-                t.transform.name = chunk.treeNormals[i].ToString();
+                for (int i = 0; i < chunk.treePositions.Count; i++)
+                {
+                    var t = Instantiate(treePrefab[Random.Range(0, treePrefab.Length)], chunk.treePositions[i], Quaternion.identity);
+                    t.transform.SetParent(chunk.container.transform);
+                    t.transform.up = chunk.treeNormals[i];
+                    t.transform.name = chunk.treeNormals[i].ToString();
+                }
             }
         }
     }

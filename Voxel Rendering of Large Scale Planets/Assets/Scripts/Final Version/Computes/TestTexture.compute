@@ -38,17 +38,6 @@ float CalculateNoise(int numLayers, float lacunarity, float persistence, float s
 [numthreads(1,1,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 { 
-    //float dn;
-    //if (CalculateDistance(id) > (planetSize / 2) - (planetSize / 2) / 2)
-    //{
-    //    dn = CalculateDistance(id) - CalculateNoise(6, 2, 0.5, scale, id + offset) * height;
-    //    dn = dn / (planetSize / 2);
-    //}
-    //else
-    //{
-    //    dn = CalculateNoise(6, 2, 0.5, caveScale, id + caveOffset) * sizeMultiplier;
-    //}
-    
     float dn = CalculateDistance(id) - CalculateNoise(6, 2, 0.5, scale, id + offset) * height;
     dn = dn / (planetSize / 2);
     

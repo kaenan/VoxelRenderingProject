@@ -5,8 +5,7 @@ using UnityEngine;
 
 public class test : MonoBehaviour
 {
-	[SerializeField]
-	private GameObject blockPrefab;//use a unit cube (1x1x1 like unity's default cube)
+	[SerializeField] public  GameObject blockPrefab;
 
 	[SerializeField]
 	private int chunkSize = 50;

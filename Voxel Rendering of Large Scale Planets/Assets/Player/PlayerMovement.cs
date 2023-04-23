@@ -6,14 +6,19 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [Header("Planet Settings")]
     public GameObject planet;
     public float gravity = 1;
+    public int renderDistance = 1;
+
+    [Header("Camera Settings")]
     public Transform cameraTransform;
     public Vector2 lookAngleMinMax = new Vector2(-75, 80);
     public float mouseSensitivityX = 400f;
     public float mouseSensitivityY = 400f;
     private float verticalLookRotation;
 
+    [Header("Player Settings")]
     public int speed = 10;
 
     [Header("Terraforming Settings")]
@@ -91,9 +96,11 @@ public class PlayerMovement : MonoBehaviour
                 }
 
                 RaycastHit hit;
+
                 if (Physics.Raycast(transform.position, Camera.main.transform.forward, out hit, 100))
                 {
                     Vector3Int hitPoint = new Vector3Int((int)hit.point.x, (int)hit.point.y, (int)hit.point.z);
+                    Vector3Int startPoint = new Vector3Int(hitPoint.x - size, hitPoint.y - size, hitPoint.z - size);
                     Vector3Int[] chunkIDs = new Vector3Int[7];
                     chunkIDs[0] = (hitPoint / 50) * 50;
                     chunkIDs[1] = new Vector3Int(chunkIDs[0].x + 50, chunkIDs[0].y, chunkIDs[0].z);
@@ -103,11 +110,7 @@ public class PlayerMovement : MonoBehaviour
                     chunkIDs[5] = new Vector3Int(chunkIDs[0].x, chunkIDs[0].y, chunkIDs[0].z + 50);
                     chunkIDs[6] = new Vector3Int(chunkIDs[0].x, chunkIDs[0].y, chunkIDs[0].z - 50);
 
-                    Vector3Int startPoint = new Vector3Int(hitPoint.x - (size / 2), hitPoint.y - (size / 2), hitPoint.z - (size / 2));
-
-
-
-                    planetScript.Terraform(startPoint, chunkIDs, size, weightChange);
+                    planetScript.Terraform(startPoint, hitPoint, chunkIDs, size, weightChange);
                 }
             }
         }

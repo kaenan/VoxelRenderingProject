@@ -6,12 +6,24 @@
 RWTexture3D<float> Result;
 
 int3 hitPoint;
+int3 startPoint;
 float weight;
 int size;
+
+float CalculateDistance(int3 xyz)
+{
+    return sqrt(pow(hitPoint.x - xyz.x, 2) + pow(hitPoint.y - xyz.y, 2) + pow(hitPoint.z - xyz.z, 2));
+}
 
 [numthreads(1,1,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
-    int3 start = hitPoint + id;
-    Result[start] = Result[start] + weight;
+    int3 currentPoint = startPoint + id;
+    
+    if (CalculateDistance(currentPoint) > size)
+    {
+        return;
+    }
+    
+    Result[currentPoint] += weight / CalculateDistance(currentPoint);
 }

@@ -2,37 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NoiseTest;
-using static UnityEngine.EventSystems.EventTrigger;
-using UnityEngine.UIElements;
 using System.Linq;
-using UnityEngine.XR;
 
 public class SphereWithChunks : MonoBehaviour
 {
 	[Header("Planet Settings")]
 	public int planetSize = 10;
 	public int chunkSize = 10;
+    [Range(0, 10)] public float isoValue = 1;
 	public Material meshTexture;
-    public GameObject voxelPrefab;
-
-    private int borderSize;
 
 	[Header("Terrain")]
-	[Range(0, 10)] public int amplitude;
+	[Range(0, 10)] public float amplitude;
     [Range(0, 1)] public float scale;
 	public Vector3 offset;
 
     private int numOfChunks;
-
-	//public int testValue;
-	//public int returnVal;
-	//public ComputeShader chunkVoxelCreater;
-	//ComputeBuffer chunkBuffer;
-	//ComputeBuffer valueBuffer;
-
 	private GameObject container;
 	private Vector3 centre;
-
     private string combinationName;
     private List<Chunk> chunks = new List<Chunk>();
     private List<CombineInstance> tempBlockData = new List<CombineInstance>();
@@ -41,12 +28,23 @@ public class SphereWithChunks : MonoBehaviour
 	{
 		if (Input.GetKeyDown(KeyCode.E))
 		{
+            var timer = System.Diagnostics.Stopwatch.StartNew();
 			if (GameObject.Find("Planet")) Destroy(GameObject.Find("Planet"));
             container = new GameObject("Planet");
             tempBlockData.Clear();
             chunks.Clear();
+
 			CreatePoints();
-			//bufferTest();
+            ChunkRender();
+            MarchCube();
+
+            foreach (Chunk chunk in chunks)
+            {
+                CreatePlanet(chunk);
+            }
+
+            timer.Stop();
+            Debug.Log("Execution time = " + timer.ElapsedMilliseconds + "ms");
 		}
 	}
 
@@ -60,8 +58,8 @@ public class SphereWithChunks : MonoBehaviour
 
 	private void CreatePoints()
 	{
-		centre = new Vector3(planetSize / 2, planetSize/ 2, planetSize / 2);
-		numOfChunks = CalculateNumberOfChunks(planetSize, chunkSize);
+		centre = new Vector3(planetSize, planetSize, planetSize);
+		numOfChunks = CalculateNumberOfChunks(planetSize * 2, chunkSize);
 
 		for (int x = 0; x < numOfChunks; x++)
 		{
@@ -79,7 +77,6 @@ public class SphereWithChunks : MonoBehaviour
 				}
 			}
 		}
-		ChunkRender();
 	}
 
 	private int CalculateNumberOfChunks(int planetSize, int chunkSize)
@@ -114,24 +111,13 @@ public class SphereWithChunks : MonoBehaviour
                         ArrayList voxelInfo;
 						string key;
 
-                        if (distance < (planetSize / 2) - 1)
+                        key = x + "," + y + "," + z;
+                        voxelInfo = new ArrayList
                         {
-                            key = x + "," + y + "," + z;
-                            voxelInfo = new ArrayList();
-                            voxelInfo.Add(voxelPosition);
-                            voxelInfo.Add(true);
-                            voxelInfo.Add((float)simplexNoise.Evaluate(xPos, yPos, zPos));
-                            vertices.Add(key, voxelInfo);
-                        }
-                        else
-                        {
-                            key = x + "," + y + "," + z;
-                            voxelInfo = new ArrayList();
-                            voxelInfo.Add(voxelPosition);
-                            voxelInfo.Add(false);
-                            voxelInfo.Add((float)simplexNoise.Evaluate(xPos, yPos, zPos));
-                            vertices.Add(key, voxelInfo);
-                        }
+                            voxelPosition,
+                            distance / (planetSize / 2)
+                        };
+                        vertices.Add(key, voxelInfo);
                     }
 				}
 			}
@@ -141,7 +127,6 @@ public class SphereWithChunks : MonoBehaviour
 			tempChunk.Add(newChunk);
 		}
 		chunks = tempChunk;
-        MarchCube();
 	}
 
     private void MarchCube()
@@ -175,15 +160,14 @@ public class SphereWithChunks : MonoBehaviour
 						ArrayList H = chunk.vertices[HKey];
 
 						string combination =
-							ConvertToCode((bool)A[1]) + "," +
-							ConvertToCode((bool)B[1]) + "," +
-							ConvertToCode((bool)C[1]) + "," +
-							ConvertToCode((bool)D[1]) + "," +
-							ConvertToCode((bool)E[1]) + "," +
-							ConvertToCode((bool)F[1]) + "," +
-							ConvertToCode((bool)G[1]) + "," +
-							ConvertToCode((bool)H[1]);
-
+							ConvertToCode((float)A[1]) + "," +
+							ConvertToCode((float)B[1]) + "," +
+							ConvertToCode((float)C[1]) + "," +
+							ConvertToCode((float)D[1]) + "," +
+							ConvertToCode((float)E[1]) + "," +
+							ConvertToCode((float)F[1]) + "," +
+							ConvertToCode((float)G[1]) + "," +
+							ConvertToCode((float)H[1]);
 						MeshCombination(A, B, C, D, E, F, G, H, combination, chunk);
 					}
 				}
@@ -195,16 +179,11 @@ public class SphereWithChunks : MonoBehaviour
             tempChunk.Add(newChunk);
         }
         chunks = tempChunk;
-
-        foreach (Chunk chunk in chunks)
-        {
-            CreatePlanet(chunk);
-        }
     }
 
-    private string ConvertToCode(bool trigger)
+    private string ConvertToCode(float voxelIsoValue)
     {
-        if (trigger)
+        if (voxelIsoValue < isoValue)
         {
             return "1";
         }
@@ -1257,7 +1236,6 @@ public class SphereWithChunks : MonoBehaviour
         normals[1] = new Vector3(0, 1, 0);
         normals[2] = new Vector3(0, 1, 0);
 
-
         Mesh mesh = new Mesh();
 
         mesh.vertices = vertices;
@@ -1271,6 +1249,7 @@ public class SphereWithChunks : MonoBehaviour
         mesh.RecalculateNormals();
 
         customMesh.GetComponent<MeshFilter>().mesh = mesh;
+        //customMesh.GetComponent<MeshRenderer>().material = meshTexture;
 
         CombineInstance ci = new CombineInstance
         {
@@ -1285,35 +1264,42 @@ public class SphereWithChunks : MonoBehaviour
 
     private void CreatePlanet(Chunk chunk)
     {
-        List<List<CombineInstance>> blockDataLists = new List<List<CombineInstance>>();
-        int vertexCount = 0;
-        blockDataLists.Add(new List<CombineInstance>());
+        GameObject planetMesh = new GameObject("Chunk");
+        planetMesh.transform.parent = container.transform;
+        MeshFilter meshFilter = planetMesh.AddComponent<MeshFilter>();
+        MeshRenderer meshRenderer = planetMesh.AddComponent<MeshRenderer>();
+        meshRenderer.material = meshTexture;
+        meshFilter.mesh.CombineMeshes(chunk.blockData.ToArray());
 
-        for (int i = 0; i < chunk.blockData.Count; i++)
-        {
-            vertexCount += chunk.blockData[i].mesh.vertexCount;
-            if (vertexCount >= 60000)
-            {
-                vertexCount = 0;
-                blockDataLists.Add(new List<CombineInstance>());
-                i--;
-            }
-            else
-            {
-                blockDataLists.Last().Add(chunk.blockData[i]);
-            }
-        }
-        foreach (List<CombineInstance> data in blockDataLists)
-        {
-            GameObject planetMesh = new GameObject("Chunk");
-            planetMesh.transform.parent = container.transform;
-            MeshFilter meshFilter = planetMesh.AddComponent<MeshFilter>();
-            MeshRenderer meshRenderer = planetMesh.AddComponent<MeshRenderer>();
-            meshRenderer.material = meshTexture;
-            meshFilter.mesh.CombineMeshes(data.ToArray());
-            //chunk.meshes.Add(meshFilter.mesh);
-            //g.AddComponent<MeshCollider>().sharedMesh = mf.sharedMesh; //setting colliders takes more time. disabled for testing.
-        }
+        //List<List<CombineInstance>> blockDataLists = new List<List<CombineInstance>>();
+        //int vertexCount = 0;
+        //blockDataLists.Add(new List<CombineInstance>());
+
+        //for (int i = 0; i < chunk.blockData.Count; i++)
+        //{
+        //    vertexCount += chunk.blockData[i].mesh.vertexCount;
+        //    if (vertexCount >= 60000)
+        //    {
+        //        vertexCount = 0;
+        //        blockDataLists.Add(new List<CombineInstance>());
+        //        i--;
+        //    }
+        //    else
+        //    {
+        //        blockDataLists.Last().Add(chunk.blockData[i]);
+        //    }
+        //}
+
+        //foreach (List<CombineInstance> data in blockDataLists)
+        //{
+        //    GameObject planetMesh = new GameObject("Chunk");
+        //    planetMesh.transform.parent = container.transform;
+        //    MeshFilter meshFilter = planetMesh.AddComponent<MeshFilter>();
+        //    MeshRenderer meshRenderer = planetMesh.AddComponent<MeshRenderer>();
+        //    meshRenderer.material = meshTexture;
+        //    meshFilter.mesh.CombineMeshes(data.ToArray());
+        //    //chunk.meshes.Add(meshFilter.mesh);
+        //}
     }
 }
 

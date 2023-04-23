@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 [CreateAssetMenu()]
@@ -9,8 +10,9 @@ public class Version8Settings : ScriptableObject
     [Tooltip("Each vertice has a noise level between 0 and 1. Vertices with a noise value under the threshold will be used to create the mesh.")]
     public float noiseThreshold;
     public GameObject water;
-    public GameObject atmosphere;
+    [HideInInspector] public GameObject atmosphere;
     public TerrainColour terrainColour;
+    public bool playable;
 
     [Header("Terrain")]
     [Range(0, 1)] public float scale;

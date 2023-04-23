@@ -10,7 +10,8 @@ public class Version8Inspector : Editor
 
         if (GUILayout.Button("Generate Planet"))
         {
-            //EditorUtility.DisplayProgressBar("Generating Planet", "", 0);
+            var timer = System.Diagnostics.Stopwatch.StartNew();
+
             var settings = serializedObject.targetObject as Version8Settings;
             Version8.Setup(settings);
             Version8.CreateChunks(settings, Version8.CalculateNumberOfChunks(settings));
@@ -28,6 +29,9 @@ public class Version8Inspector : Editor
             GenerateTrees(settings);
             Version8.DisposeBuffers(settings.triangleBuffer, settings.triCountBuffer);
             settings.container.GetComponent<Planet>().planetData.SetPlanetSettings(settings);
+
+            timer.Stop();
+            Debug.Log("Execution Time = " + timer.ElapsedMilliseconds + "ms");
         }
     }
 

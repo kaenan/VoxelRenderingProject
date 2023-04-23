@@ -43,4 +43,4 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   planetMaterial: {fileID: -876546973899608171, guid: e260950a2cdf4544fa26e81f79171cc6, type: 3}
   minimumPoint: 0
-  maximumPoint: 140.8408
+  maximumPoint: 238.8

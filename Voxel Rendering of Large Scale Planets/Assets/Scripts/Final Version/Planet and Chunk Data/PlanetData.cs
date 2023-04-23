@@ -9,6 +9,7 @@ public class PlanetData : ScriptableObject
 
     [HideInInspector] public int planetSize;
     [HideInInspector] public float noiseThreshold;
+    [HideInInspector] public bool playable;
 
     [HideInInspector] public float scale;
     [HideInInspector] public float heightMultiplier;
@@ -38,6 +39,7 @@ public class PlanetData : ScriptableObject
     {
         planetSize = settings.planetSize;
         noiseThreshold = settings.noiseThreshold;
+        playable = settings.playable;
         scale = settings.scale;
         heightMultiplier = settings.heightMultiplier;
         offset = settings.offset;

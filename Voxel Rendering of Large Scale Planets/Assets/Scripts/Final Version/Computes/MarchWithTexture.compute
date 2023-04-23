@@ -24,7 +24,7 @@ int3 startingPosition;
 float threshold;
 int textureSize;
 
-float SampleNoise(int3 xyz)
+float GetTextureIsoValue(int3 xyz)
 {
     xyz = max(0, min(xyz, textureSize));
     return noiseTexture[xyz];
@@ -36,25 +36,25 @@ float3 calculateNormal(int3 xyz)
     int3 offsetY = int3(0, 1, 0);
     int3 offsetZ = int3(0, 0, 1);
 
-    float dx = SampleNoise(xyz + offsetX) - SampleNoise(xyz - offsetX);
-    float dy = SampleNoise(xyz + offsetY) - SampleNoise(xyz - offsetY);
-    float dz = SampleNoise(xyz + offsetZ) - SampleNoise(xyz - offsetZ);
+    float dx = GetTextureIsoValue(xyz + offsetX) - GetTextureIsoValue(xyz - offsetX);
+    float dy = GetTextureIsoValue(xyz + offsetY) - GetTextureIsoValue(xyz - offsetY);
+    float dz = GetTextureIsoValue(xyz + offsetZ) - GetTextureIsoValue(xyz - offsetZ);
 
     return normalize(float3(dx, dy, dz));
 }
 
 Vertex createVertex(int3 coordA, int3 coordB)
 {
-    float xyzA = SampleNoise(coordA);
-    float xyzB = SampleNoise(coordB);
+    float xyzA = GetTextureIsoValue(coordA);
+    float xyzB = GetTextureIsoValue(coordB);
     float3 posA = coordA;
     float3 posB = coordB;
     
-	// Interpolate between the two corner points based on the density
+	// Interpolate between the two points based on iso values
     float t = (threshold - xyzA) / (xyzB - xyzA);
     float3 position = posA + t * (posB - posA);
 
-	// Normal:
+	// Calculate vertex normal
     float3 normalA = calculateNormal(coordA);
     float3 normalB = calculateNormal(coordB);
     float3 normal = normalize(normalA + t * (normalB - normalA));
@@ -85,7 +85,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     int cubeConfiguration = 0;
     for (int i = 0; i < 8; i++)
     {
-        if (SampleNoise(cubeCorners[i]) < threshold)
+        if (GetTextureIsoValue(cubeCorners[i]) < threshold)
         {
             cubeConfiguration |= (1 << i);
         }

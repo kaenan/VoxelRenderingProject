@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 2816326447012517642}
   m_Layer: 0
   m_Name: Capsule
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -136,6 +136,7 @@ MonoBehaviour:
   mouseSensitivityX: 10
   mouseSensitivityY: 10
   speed: 10
+  allowTerraforming: 0
   size: 2
   weight: 0.5
 --- !u!1 &2816326447192212093

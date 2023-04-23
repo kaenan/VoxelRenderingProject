@@ -44,8 +44,8 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     m_Colors:
-    - _centre: {r: 200, g: 211.3, b: 230.2, a: 0}
-    - _elevation: {r: 0, g: 141.22, b: 0, a: 0}
+    - _centre: {r: 30, g: 30, b: 30, a: 0}
+    - _elevation: {r: 0, g: 39.645, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &5615444326277867022
 MonoBehaviour:

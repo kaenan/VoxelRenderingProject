@@ -93,7 +93,8 @@ public class Chunk : ScriptableObject
                         treePositions.Add(vertices[i]);
                         treeNormals.Add(normals[i]);
                     }
-                } else
+                }
+                else
                 {
                     if (normals[i].y < -0.5)
                     {

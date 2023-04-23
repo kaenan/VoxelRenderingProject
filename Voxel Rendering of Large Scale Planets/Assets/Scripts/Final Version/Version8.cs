@@ -53,7 +53,18 @@ public static class Version8
 
                     //Create chunk struct and add to list
                     GameObject chunkContainer = new(position.ToString());
-                    chunkContainer.transform.SetParent(settings.container.transform);
+                    if (settings.playable)
+                    {
+                        GameObject chunkContainer1 = new("Chunk " + i, typeof(ChunkController), typeof(BoxCollider));
+                        chunkContainer1.GetComponent<BoxCollider>().isTrigger = true;
+                        chunkContainer1.GetComponent<BoxCollider>().size = new Vector3(settings.chunkSize, settings.chunkSize, settings.chunkSize);
+                        chunkContainer1.GetComponent<BoxCollider>().center = new Vector3(position.x + settings.chunkSize / 2, position.y + settings.chunkSize / 2, position.z + settings.chunkSize / 2);
+                        chunkContainer1.transform.SetParent(settings.container.transform);
+                        chunkContainer.transform.SetParent(chunkContainer1.transform);
+                    } else
+                    {
+                        chunkContainer.transform.SetParent(settings.container.transform);
+                    }
                     Chunk chunk = new(position, chunkContainer, settings.terrainColour.planetMaterial);
                     settings.chunks[i] = chunk;
                     i++;
