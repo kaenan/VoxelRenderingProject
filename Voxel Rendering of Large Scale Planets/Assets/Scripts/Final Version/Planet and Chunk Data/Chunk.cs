@@ -21,7 +21,7 @@ public class Chunk : ScriptableObject
 
     public Mesh mesh;
 
-    public Chunk(Vector3Int startingPosition, GameObject container, Material material) 
+    public void InitChunk(Vector3Int startingPosition, GameObject container, Material material) 
     {
         chunkID = startingPosition.ToString();
         this.startingPosition = startingPosition;

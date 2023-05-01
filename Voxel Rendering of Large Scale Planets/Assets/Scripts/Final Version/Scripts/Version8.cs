@@ -4,7 +4,7 @@ public static class Version8
 {
     /// <summary>
     /// 
-    /// This version (8) uses the chunks method and compute shaders
+    /// This Final Version uses the chunks method and compute shaders
     /// 
     /// </summary>
 
@@ -65,7 +65,9 @@ public static class Version8
                     {
                         chunkContainer.transform.SetParent(settings.container.transform);
                     }
-                    Chunk chunk = new(position, chunkContainer, settings.terrainColour.planetMaterial);
+                    Chunk chunk = ScriptableObject.CreateInstance<Chunk>();
+                    chunk.InitChunk(position, chunkContainer, settings.terrainColour.planetMaterial);
+                    //Chunk chunk = new(position, chunkContainer, settings.terrainColour.planetMaterial);
                     settings.chunks[i] = chunk;
                     i++;
                 }

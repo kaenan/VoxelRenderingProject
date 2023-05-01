@@ -99,8 +99,8 @@ public class Version7 : MonoBehaviour
                     //Create chunk struct and add to list
                     GameObject chunkContainer = new GameObject(position.ToString());
                     chunkContainer.transform.SetParent(container.transform);
-                    Chunk chunk = new Chunk(position, chunkContainer, terrainColour.planetMaterial);
-                    chunks[i] = chunk;
+                    //Chunk chunk = new Chunk(position, chunkContainer, terrainColour.planetMaterial);
+                    //chunks[i] = chunk;
                     i++;
                 }
             }

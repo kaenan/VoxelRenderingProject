@@ -81,8 +81,8 @@ public class TestTextureC : MonoBehaviour
                     //Create chunk struct and add to list
                     GameObject chunkContainer = new(position.ToString());
                     chunkContainer.transform.SetParent(container.transform);
-                    Chunk chunk = new(position, chunkContainer, mat);
-                    chunks[i] = chunk;
+                    //Chunk chunk = new(position, chunkContainer, mat);
+                    //chunks[i] = chunk;
                     i++;
                 }
             }

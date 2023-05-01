@@ -18,7 +18,8 @@ public class ChunkController : MonoBehaviour
             {
                 child = transform.GetChild(0);
                 child.gameObject.SetActive(false);
-                GetComponent<BoxCollider>().size = new Vector3(planet.planetData.chunkSize * player.renderDistance, planet.planetData.chunkSize * player.renderDistance, planet.planetData.chunkSize * player.renderDistance);
+                float size = (planet.planetData.chunkSize + (planet.planetData.chunkSize / 2)) * player.renderDistance;
+                GetComponent<BoxCollider>().size = new Vector3(size, size, size);
             }
         }
     }
