@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d909000f81785554587fd8fa6bcbfc2f, type: 3}
-  m_Name: V8Terrain
+  m_Name: T4
   m_EditorClassIdentifier: 
   gradient:
     serializedVersion: 2
-    key0: {r: 0.49056602, g: 0.49056602, b: 0.49056602, a: 1}
+    key0: {r: 0.3301887, g: 0.3301887, b: 0.3301887, a: 1}
     key1: {r: 0.13300997, g: 0.5754717, b: 0.14105473, a: 1}
     key2: {r: 0.14901963, g: 0.40392157, b: 0.15593174, a: 0}
     key3: {r: 0.33962262, g: 0.13530482, b: 0.059273757, a: 0}
@@ -41,6 +41,6 @@ MonoBehaviour:
     m_Mode: 0
     m_NumColorKeys: 5
     m_NumAlphaKeys: 2
-  planetMaterial: {fileID: 2100000, guid: 20e4892c6c7fb9d4a9a11ee39e31aecc, type: 2}
+  planetMaterial: {fileID: 2100000, guid: cc3973221142caa46b96717c146f9d13, type: 2}
   minimumPoint: 0
-  maximumPoint: 180
+  maximumPoint: 242.8164

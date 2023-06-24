@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d909000f81785554587fd8fa6bcbfc2f, type: 3}
+  m_Name: TerrainColour1
+  m_EditorClassIdentifier: 
+  gradient:
+    serializedVersion: 2
+    key0: {r: 0.49056602, g: 0.49056602, b: 0.49056602, a: 1}
+    key1: {r: 0.13300997, g: 0.5754717, b: 0.14105473, a: 1}
+    key2: {r: 0.14901963, g: 0.40392157, b: 0.15593174, a: 0}
+    key3: {r: 0.33962262, g: 0.13530482, b: 0.059273757, a: 0}
+    key4: {r: 0.8018868, g: 0.8018868, b: 0.8018868, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 43176
+    ctime1: 47802
+    ctime2: 51272
+    ctime3: 62066
+    ctime4: 65535
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 5
+    m_NumAlphaKeys: 2
+  planetMaterial: {fileID: 2100000, guid: 20e4892c6c7fb9d4a9a11ee39e31aecc, type: 2}
+  minimumPoint: 0
+  maximumPoint: 80
